@@ -25,6 +25,7 @@ namespace VPLab6
     public partial class MainWindow : Window
     {
         private bool isDrawingSnow = false;
+        private bool isDrawingBall = false;
 
         public MainWindow()
         {
@@ -37,20 +38,23 @@ namespace VPLab6
 
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
-            DrawSnaw(canvas);
+            isDrawingBall = false;
+            DrawSnaw();
         }
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
             isDrawingSnow = false;
+            DrawBall();
         }
 
         private void Button3_Click(object sender, RoutedEventArgs e)
         {
             isDrawingSnow = false;
+            isDrawingBall = false;
         }
 
-        private void DrawSnowman(Canvas canvas)
+        private void DrawSnowman()
         {
             SolidColorBrush blue = new SolidColorBrush(Color.FromRgb(210, 218, 228));
             SolidColorBrush black = new SolidColorBrush(Colors.Black);
@@ -110,7 +114,7 @@ namespace VPLab6
             return path;
         }
 
-        private async void DrawSnaw(Canvas canvas)
+        private async void DrawSnaw()
         {
             SolidColorBrush solidColorBrush = new SolidColorBrush(Color.FromRgb(178, 212, 233));
             Random random = new Random();
@@ -136,7 +140,7 @@ namespace VPLab6
                     
                     if (i == 100)
                     {
-                        DrawSnowman(canvas);
+                        DrawSnowman();
                     }
                 }
 
@@ -156,6 +160,70 @@ namespace VPLab6
                 }
 
                 await Task.Delay(10);
+
+                canvas.Children.Clear();
+            }
+        }
+
+        private async void DrawBall()
+        {
+            Random random = new Random();
+            byte r = Convert.ToByte(random.Next(0, 255));
+            byte g = Convert.ToByte(random.Next(0, 255));
+            byte b = Convert.ToByte(random.Next(0, 255));
+
+            SolidColorBrush color = new SolidColorBrush(Color.FromRgb(r, g, b));
+
+            int size = 50;
+            int x = size, y = size;
+            int directionX = 1, directionY = 1;
+            bool isChangeColor = false;
+
+            isDrawingBall = true;
+
+            while (isDrawingBall)
+            {
+                canvas.Children.Add(DrawEllipse(color, x, y, size, size));
+
+                if (x > 740 - size)
+                {
+                    directionX = -1;
+                    isChangeColor = true;
+                }
+
+                if (y > 260 - size)
+                {
+                    directionY = -1;
+                    isChangeColor = true;
+                }
+
+                if (x < size) 
+                {
+                    directionX = 1;
+                    isChangeColor = true;
+                }
+
+                if (y < size)
+                {
+                    directionY = 1;
+                    isChangeColor = true;
+                }
+
+                if (isChangeColor)
+                {
+                    isChangeColor = false;
+
+                    r = Convert.ToByte(random.Next(0, 255));
+                    g = Convert.ToByte(random.Next(0, 255));
+                    b = Convert.ToByte(random.Next(0, 255));
+
+                    color = new SolidColorBrush(Color.FromRgb(r, g, b));
+                }
+
+                x += directionX;
+                y += directionY;
+
+                await Task.Delay(1);
 
                 canvas.Children.Clear();
             }
