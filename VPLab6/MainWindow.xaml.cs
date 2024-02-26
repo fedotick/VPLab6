@@ -26,25 +26,50 @@ namespace VPLab6
     {
         private bool isDrawingSnow = false;
         private bool isDrawingBall = false;
+        private bool isDrawingPoints = false;
+
+        private bool isDataGridEdited = false;
+
+        private List<Point> pointsList = new List<Point>();
 
         public MainWindow()
         {
             InitializeComponent();
 
+            dataGridPoints.Visibility = Visibility.Hidden;
+
             button1.Click += Button1_Click;
             button2.Click += Button2_Click;
             button3.Click += Button3_Click;
+
+            canvas.MouseLeftButtonDown += Canvas_MouseLeftButtonDown;
+
+            DrawGrid();
         }
 
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
             isDrawingBall = false;
+            isDrawingPoints = false;
+            dataGridPoints.Visibility = Visibility.Hidden;
+            canvas.HorizontalAlignment = HorizontalAlignment.Center;
+            textBoxX.Visibility = Visibility.Hidden;
+            textBoxY.Visibility = Visibility.Hidden;
+            buttonAddPoint.Visibility = Visibility.Hidden;
+            canvas.Width = 740;
             DrawSnaw();
         }
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
             isDrawingSnow = false;
+            isDrawingPoints = false;
+            dataGridPoints.Visibility = Visibility.Hidden;
+            canvas.HorizontalAlignment = HorizontalAlignment.Center;
+            textBoxX.Visibility = Visibility.Hidden;
+            textBoxY.Visibility = Visibility.Hidden;
+            buttonAddPoint.Visibility = Visibility.Hidden;
+            canvas.Width = 740;
             DrawBall();
         }
 
@@ -52,6 +77,69 @@ namespace VPLab6
         {
             isDrawingSnow = false;
             isDrawingBall = false;
+            dataGridPoints.Visibility = Visibility.Visible;
+            canvas.HorizontalAlignment = HorizontalAlignment.Right;
+            textBoxX.Visibility = Visibility.Visible;
+            textBoxY.Visibility = Visibility.Visible;
+            buttonAddPoint.Visibility = Visibility.Visible;
+            canvas.Width = 540;
+        }
+
+        private void DrawPointsOnCanvas()
+        {
+            foreach (Point point in pointsList)
+            {
+                Ellipse ellipse = new Ellipse();
+                ellipse.Width = 5;
+                ellipse.Height = 5;
+                ellipse.Fill = Brushes.Red; 
+                Canvas.SetLeft(ellipse, point.X - ellipse.Width / 2);
+                Canvas.SetTop(ellipse, point.Y - ellipse.Height / 2);
+
+                canvas.Children.Add(ellipse);
+            }
+        }
+
+        private void DrawBoundingRectangle()
+        {
+            if (pointsList.Count < 2)
+                return;
+
+            Rect boundingRect = CalculateBoundingRectangle(pointsList);
+
+            Rectangle rect = new Rectangle();
+            rect.Width = boundingRect.Width;
+            rect.Height = boundingRect.Height;
+            rect.Stroke = Brushes.Blue;
+            rect.StrokeThickness = 2;
+            Canvas.SetLeft(rect, boundingRect.Left);
+            Canvas.SetTop(rect, boundingRect.Top);
+
+            canvas.Children.Add(rect);
+        }
+
+        private Rect CalculateBoundingRectangle(List<Point> points)
+        {
+            double minX = points.Min(p => p.X);
+            double minY = points.Min(p => p.Y);
+            double maxX = points.Max(p => p.X);
+            double maxY = points.Max(p => p.Y);
+
+            return new Rect(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point clickPoint = e.GetPosition(canvas);
+            pointsList.Add(clickPoint);
+
+            dataGridPoints.ItemsSource = pointsList;
+            dataGridPoints.Items.Refresh();
+
+            canvas.Children.Clear();
+            DrawGrid();
+            DrawPointsOnCanvas();
+            DrawBoundingRectangle();
         }
 
         private void DrawSnowman()
@@ -227,6 +315,43 @@ namespace VPLab6
 
                 canvas.Children.Clear();
             }
+        }
+
+        public void DrawGrid()
+        {
+            for (int i = 0; i < 27; i++)
+            {
+                DrawLine(10 + i * 20, 0, 10 + i * 20, 260);
+            }
+
+            for (int i = 0; i < 13; i++)
+            {
+                DrawLine(0, 10 + i * 20, 540, 10 + i * 20);
+            }
+
+            DrawLine(270, 0, 270, 260, 2);
+            DrawLine(0, 130, 540, 130, 2);
+        }
+
+        private void DrawLine(int x1, int y1, int x2, int y2, int c = 1)
+        {
+            Line verticalLine = new Line();
+
+            verticalLine.X1 = x1;
+            verticalLine.Y1 = y1;
+            verticalLine.X2 = x2;
+            verticalLine.Y2 = y2;
+
+            verticalLine.Stroke = Brushes.Gray;
+            verticalLine.StrokeThickness = 1;
+
+            if (c == 2)
+            {
+                verticalLine.Stroke = Brushes.Black;
+                verticalLine.StrokeThickness = 2;
+            }
+
+            canvas.Children.Add(verticalLine);
         }
     }
 }
