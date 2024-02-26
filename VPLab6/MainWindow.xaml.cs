@@ -28,35 +28,25 @@ namespace VPLab6
         private bool isDrawingBall = false;
         private bool isDrawingPoints = false;
 
-        private bool isDataGridEdited = false;
-
         private List<Point> pointsList = new List<Point>();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            dataGridPoints.Visibility = Visibility.Hidden;
+            DrawSnaw();
 
             button1.Click += Button1_Click;
             button2.Click += Button2_Click;
             button3.Click += Button3_Click;
 
             canvas.MouseLeftButtonDown += Canvas_MouseLeftButtonDown;
-
-            DrawGrid();
         }
 
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
             isDrawingBall = false;
             isDrawingPoints = false;
-            dataGridPoints.Visibility = Visibility.Hidden;
-            canvas.HorizontalAlignment = HorizontalAlignment.Center;
-            textBoxX.Visibility = Visibility.Hidden;
-            textBoxY.Visibility = Visibility.Hidden;
-            buttonAddPoint.Visibility = Visibility.Hidden;
-            canvas.Width = 740;
             DrawSnaw();
         }
 
@@ -64,25 +54,19 @@ namespace VPLab6
         {
             isDrawingSnow = false;
             isDrawingPoints = false;
-            dataGridPoints.Visibility = Visibility.Hidden;
-            canvas.HorizontalAlignment = HorizontalAlignment.Center;
-            textBoxX.Visibility = Visibility.Hidden;
-            textBoxY.Visibility = Visibility.Hidden;
-            buttonAddPoint.Visibility = Visibility.Hidden;
-            canvas.Width = 740;
             DrawBall();
         }
 
-        private void Button3_Click(object sender, RoutedEventArgs e)
+        private async void Button3_Click(object sender, RoutedEventArgs e)
         {
             isDrawingSnow = false;
             isDrawingBall = false;
-            dataGridPoints.Visibility = Visibility.Visible;
-            canvas.HorizontalAlignment = HorizontalAlignment.Right;
-            textBoxX.Visibility = Visibility.Visible;
-            textBoxY.Visibility = Visibility.Visible;
-            buttonAddPoint.Visibility = Visibility.Visible;
-            canvas.Width = 540;
+
+            await Task.Delay(101);
+
+            DrawGrid();
+            DrawPointsOnCanvas();
+            DrawBoundingRectangle();
         }
 
         private void DrawPointsOnCanvas()
@@ -319,18 +303,18 @@ namespace VPLab6
 
         public void DrawGrid()
         {
-            for (int i = 0; i < 27; i++)
+            for (int i = 0; i < 37; i++)
             {
-                DrawLine(10 + i * 20, 0, 10 + i * 20, 260);
+                DrawLine(10 + i * 20, 0, 10 + i * 20, 370);
             }
 
             for (int i = 0; i < 13; i++)
             {
-                DrawLine(0, 10 + i * 20, 540, 10 + i * 20);
+                DrawLine(0, 10 + i * 20, 740, 10 + i * 20);
             }
 
-            DrawLine(270, 0, 270, 260, 2);
-            DrawLine(0, 130, 540, 130, 2);
+            DrawLine(370, 0, 370, 370, 2);
+            DrawLine(0, 130, 740, 130, 2);
         }
 
         private void DrawLine(int x1, int y1, int x2, int y2, int c = 1)
