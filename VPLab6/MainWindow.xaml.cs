@@ -306,11 +306,29 @@ namespace VPLab6
             for (int i = 0; i < 37; i++)
             {
                 DrawLine(10 + i * 20, 0, 10 + i * 20, 370);
+                if (i - 18 != 0)
+                {
+                    TextBlock textBlock = new TextBlock();
+                    textBlock.Text = (i - 18).ToString();
+                    textBlock.Foreground = new SolidColorBrush(Colors.Black);
+                    Canvas.SetLeft(textBlock, 5 + i * 20);
+                    Canvas.SetTop(textBlock, 130);
+                    canvas.Children.Add(textBlock);
+                }
             }
 
             for (int i = 0; i < 13; i++)
             {
                 DrawLine(0, 10 + i * 20, 740, 10 + i * 20);
+                if (i - 6 != 0)
+                {
+                    TextBlock textBlock = new TextBlock();
+                    textBlock.Text = ((i - 6) * -1).ToString();
+                    textBlock.Foreground = new SolidColorBrush(Colors.Black);
+                    Canvas.SetLeft(textBlock, 355);
+                    Canvas.SetTop(textBlock, 5 + i * 20);
+                    canvas.Children.Add(textBlock);
+                }
             }
 
             DrawLine(370, 0, 370, 370, 2);
